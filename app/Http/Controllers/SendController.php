@@ -10,15 +10,44 @@ use Illuminate\Support\Facades\DB;
 class SendController extends Controller
 {   
     public function get() {
+
         $data = DB::select('SELECT * FROM sends');
 
-        echo '<pre>';
-        
+        $response = [];
         foreach ($data as $item) {
-            var_dump($item->id);
+
+            $response[$item->type][$item->id] = [
+                'min' => $item->min,
+                'max' => $item->max,
+                'l1' => $item->l1,
+                'l2' => $item->l2,
+                'l3' => $item->l3,
+                'l4' => $item->l4,
+                'e1' => $item->e1,
+                'e2' => $item->e2,
+                'e3' => $item->e3,
+                'e4' => $item->e4,
+                'n1' => $item->n1,
+                'n2' => $item->n2,
+                'n3' => $item->n3,
+                'n4' => $item->n4,
+                'n5' => $item->n5,
+                'n6' => $item->n6,
+                'i1' => $item->i1,
+                'i2' => $item->i2,
+                'i3' => $item->i3,
+                'i4' => $item->i4,
+                'i5' => $item->i5,
+                'i6' => $item->i6,
+            ];
+
         }
 
-        die;
+        // echo '<pre>';
+        // var_dump($response);
+        // die;
+        return view('values', ['data' => $response]);
+
     }
 
     public function import() {
@@ -130,7 +159,7 @@ class SendController extends Controller
         $path = url('/') . Storage::get('teste2.csv');
         $response = explode("\n", $path);
 
-        for ($x=9; $x<=20; $x++) {
+        for ($x=9; $x<=21; $x++) {
             $data[] = $this->extractRow($response[$x], $response[8], 'EXP');
         }
 
@@ -146,10 +175,16 @@ class SendController extends Controller
         for ($x=1; $x < (count($response) - 1); $x++) {
 
             $peso = explode(' ', $response[0]);
+
             $obj[$head[$x]] = $this->converterFloat($response[$x]);
             $obj['type'] = $type;
             $obj['min'] = $peso[0];
             $obj['max'] = end($peso);
+
+            if ($peso[0] == "Kg") {
+                $obj['min'] = -1;
+                $obj['max'] = -1;
+            }
         }
 
         return $obj;
