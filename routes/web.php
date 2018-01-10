@@ -15,5 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('import', 'SendController@import');
-Route::get('get', 'SendController@get');
+Route::get('/import', 'SendController@import');
+Route::get('/import-state', 'StatesController@import');
+Route::get('/import-state-relationship', 'StatesController@importRelationship');
+Route::get('/get-state', 'StatesController@get');
+Route::get('/get', 'SendController@get');
+Route::get('/calculate', 'SendController@calculate');
+Route::post('/calculate2', 'SendController@calculate2')->name('calculate2');;

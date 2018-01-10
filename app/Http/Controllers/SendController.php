@@ -6,9 +6,18 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\ExcelServiceProvider;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Http\FormRequest;
 
 class SendController extends Controller
 {   
+    public function calculate(Request $request) {
+        return view('calculate');
+    }
+
+    public function calculate2(Request $request) {
+        dd($request);
+    }
+
     public function get() {
 
         $data = DB::select('SELECT * FROM sends');
@@ -43,9 +52,6 @@ class SendController extends Controller
 
         }
 
-        // echo '<pre>';
-        // var_dump($response);
-        // die;
         return view('values', ['data' => $response]);
 
     }
@@ -142,6 +148,27 @@ class SendController extends Controller
         die;
         
     }
+
+    public function importState() {
+
+        $this->importStates();
+        die;
+
+        $path = url('/') . Storage::get('teste3.csv');
+
+
+        $response = explode("\n", $path);
+
+        for ($x=2; $x<=29; $x++) {
+            $data[] = explode(';', $response[$x]);
+        }
+
+        echo '<pre>';
+        var_dump($data);
+        die;
+    }
+
+
 
     private function readCsv() {
 
