@@ -46,4 +46,14 @@ class Code extends Model
 
         return true;
     }
+
+    public function getCodes($originId, $destinyId) {
+        $codes = $this::where('state_origin', $originId)->where('state_destiny', $destinyId)->where('state_origin', $originId)->first()->toArray();
+
+        if (!$codes) {
+            return null;
+        }
+        
+        return $codes['code'];
+    }
 }

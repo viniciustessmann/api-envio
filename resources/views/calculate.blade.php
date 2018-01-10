@@ -1,4 +1,4 @@
-{!! Form::open(['route' => 'calculate2']) !!}
+{!! Form::open(['route' => 'calculate-request']) !!}
 
 <div class="form-group">
     {!! Form::label('CEP de origem', 'CEP de origem') !!}

@@ -21,5 +21,5 @@ Route::get('/import-state-relationship', 'StatesController@importRelationship');
 Route::get('/get-codes', 'StatesController@getCodes');
 Route::get('/get-state', 'StatesController@get');
 Route::get('/get', 'SendController@get');
-Route::get('/calculate', 'SendController@calculate');
-Route::post('/calculate2', 'SendController@calculate2')->name('calculate2');;
+Route::get('/calculate', 'ShipmentsController@calculateForm');
+Route::post('/calculate-request', 'ShipmentsController@calculateRequest')->name('calculate-request');;

@@ -44,7 +44,6 @@ class SendController extends Controller
                 'i5' => $item['i5'],
                 'i6' => $item['i6'],
             ];
-
         }
 
         return view('values', ['data' => $response]);

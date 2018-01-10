@@ -41,6 +41,16 @@ class State extends Model
         return true;
     }
 
+    public function getIdByUf($name) {
+        $state = $this::where('name', $name)->first()->toArray();
+
+        if (!$state) {
+            return null;
+        }
+
+        return $state['id'];
+    }
+
     public function findAll() {
         return $this::all()->toArray();
     }
