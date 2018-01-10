@@ -17,6 +17,25 @@ class StatesController extends Controller
         return view('states', ['states' => $states]);
     }
 
+    public function getCodes() {
+        $code = new Code();
+        $state = new State();
+
+        $listStates = $state->findAllList(); 
+        $codes = $code->findAll();
+
+        $response = [];
+
+        foreach ($codes as $index1 => $code) {
+            $response[$listStates[$code['state_origin']]][$listStates[$code['state_destiny']]] = $code['code'];
+        }
+
+
+        // dd($response);
+
+        return view('codes', ['codes' => $response]);
+    }
+
     public function import() {
 
         $data = $this->readCsvStates();

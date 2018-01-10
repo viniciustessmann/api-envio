@@ -32,10 +32,10 @@ class Code extends Model
         return $this->attributes['code'];
     }
 
-    public function getIdByOriginAndDestiny($originId, $destinyId) {
-
+    public function findAll() {
+        return $this::all()->toArray();
     }
-
+    
     public function existsItCombination($originId, $destinyId) {
 
         $count = $this::where('state_origin', $originId)->where('state_destiny', $destinyId)->count();
