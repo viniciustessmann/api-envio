@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('import', 'SendController@import');
+Route::get('get', 'SendController@get');
