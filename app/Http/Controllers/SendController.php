@@ -44,6 +44,7 @@ class SendController extends Controller
         foreach ($data as $item) {
             
             $response[$item['type']][$item['id']] = [
+                'id' => $item['id'],
                 'min' => $item['min'],
                 'max' => $item['max'],
                 'l1' => $item['l1'],
@@ -76,20 +77,10 @@ class SendController extends Controller
 
     public function import() {
 
-        // echo '<pre>';
-
-        //TODO - Rever metodo de save, ver se já existe o registro.
-        //Erase all data before insert new import.
         //DB::delete('delete from sends');
-        
-
+    
         $send = new Send();
         $all = $send->findAll();
-
-        // var_dump($all);
-        var_dump('COUNT: ' . count($all));
-
-        
         
         $info = $this->readCsv();
 
@@ -125,18 +116,19 @@ class SendController extends Controller
             $send->setI5((isset($item['I5'])) ? $item['I5'] : null);
             $send->setI6((isset($item['I6'])) ? $item['I6'] : null);
 
-            $need = $this->existThisRowInDbAndNeedUpdate($item, $all);
+            $res = $this->existThisRowInDbAndNeedUpdate($item, $all);
 
-            if ($need != false) {
-                $send->save();
+            if (isset($res['update'])) {
+                $send->updateRow($res);
+                continue;
             }
 
-            if ($need == false || is_null($need)) {
-                dd('UPDATING');
+            if ($res != false) {
+                $send->save();
             }
         }
 
-        die;
+        return 'Importação OK';
         
     }
 
@@ -161,9 +153,12 @@ class SendController extends Controller
                     continue;
                 }
                 if (isset($items1[$code]) && $items1[$code] != $row[$codeUp]) {
-                    // echo '<pre>';
-                    var_dump($items1[$code] . ' - ' . $row[$codeUp] );
-                    return $items1['id'];
+                    return [
+                        'update' => true,
+                        'id' => $items1['id'], 
+                        'field' => $code,
+                        'value' => $row[$codeUp]
+                    ];
                 }
             }
         }

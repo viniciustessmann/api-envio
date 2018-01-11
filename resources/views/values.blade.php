@@ -15,6 +15,7 @@
 
                     <table border=1>
                         <tr>
+                            <td>ID</td>
                             <td>Peso minmo</td>
                             <td>Peso maximo</td>
                             <td>l1</td>

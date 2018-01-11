@@ -202,7 +202,14 @@ class Send extends Model
 
     public function updateRow($send) {
 
+        echo '<pre>';
+        var_dump($send);
+
+        $this->where('id', $send['id'])->update([
+            $send['field'] => $send['value']
+        ]);
     }
+
     public function getPrice($code, $peso, $valor, $type, $service) {
 
         $response = [
