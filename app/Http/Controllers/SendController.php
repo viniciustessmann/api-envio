@@ -12,6 +12,29 @@ use App\Send;
 class SendController extends Controller
 {   
 
+    const codes = [
+        'l1',
+        'l2',
+        'l3',
+        'l4',
+        'e1',
+        'e2',
+        'e3',
+        'e4',
+        'n1',
+        'n2',
+        'n3',
+        'n4',
+        'n5',
+        'n6',
+        'i1',
+        'i2',
+        'i3',
+        'i4',
+        'i5',
+        'i6'
+    ];
+
     public function get() {
 
         $send = new Send();
@@ -43,6 +66,8 @@ class SendController extends Controller
                 'i4' => $item['i4'],
                 'i5' => $item['i5'],
                 'i6' => $item['i6'],
+                'create' => $item['created_at'],
+                'update' => $item['updated_at']
             ];
         }
 
@@ -50,11 +75,22 @@ class SendController extends Controller
     }
 
     public function import() {
-        
+
+        // echo '<pre>';
+
         //TODO - Rever metodo de save, ver se já existe o registro.
         //Erase all data before insert new import.
-        DB::delete('delete from sends');
+        //DB::delete('delete from sends');
+        
 
+        $send = new Send();
+        $all = $send->findAll();
+
+        // var_dump($all);
+        var_dump('COUNT: ' . count($all));
+
+        
+        
         $info = $this->readCsv();
 
         foreach ($info as $item) {
@@ -89,12 +125,50 @@ class SendController extends Controller
             $send->setI5((isset($item['I5'])) ? $item['I5'] : null);
             $send->setI6((isset($item['I6'])) ? $item['I6'] : null);
 
-            $send->save();
+            $need = $this->existThisRowInDbAndNeedUpdate($item, $all);
 
+            if ($need != false) {
+                $send->save();
+            }
+
+            if ($need == false || is_null($need)) {
+                dd('UPDATING');
+            }
         }
 
         die;
         
+    }
+
+    private function existThisRowInDbAndNeedUpdate($row, $all) {
+
+        if (empty($all)) {
+            return null;
+        }
+
+        foreach ($all as $index1 => $items1) {
+
+            if ($items1['type'] != $row['type'] || $items1['min'] != $row['min'] || $items1['max'] != $row['max']) {
+                continue;
+            }
+
+            $response = false;
+            foreach ($this::codes as $code) {
+
+                $codeUp = strtoupper($code);
+
+                if (!isset($items1[$code])) {
+                    continue;
+                }
+                if (isset($items1[$code]) && $items1[$code] != $row[$codeUp]) {
+                    // echo '<pre>';
+                    var_dump($items1[$code] . ' - ' . $row[$codeUp] );
+                    return $items1['id'];
+                }
+            }
+        }
+
+        return $response;
     }
 
     private function readCsv() {

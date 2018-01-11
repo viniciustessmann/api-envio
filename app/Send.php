@@ -8,6 +8,10 @@ class Send extends Model
 {
     protected $table = 'sends';
 
+    public function setId($id) {
+        $this->attributes['id'] = $id;
+    }
+
     public function setMin($min) {
         $this->attributes['min'] = $min;
     }
@@ -196,6 +200,9 @@ class Send extends Model
         return $this::all()->toArray();
     }
 
+    public function updateRow($send) {
+
+    }
     public function getPrice($code, $peso, $valor, $type, $service) {
 
         $response = [

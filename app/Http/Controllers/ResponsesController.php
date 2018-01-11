@@ -56,7 +56,7 @@ class ResponsesController extends Controller
         $send = new Send();
         $resultSend['eco'] = $send->getPrice($codeField, $peso, $params['valor'], 'ECO', $servicesAditional);
         $resultSend['exp'] = $send->getPrice($codeField, $peso, $params['valor'], 'EXP', $servicesAditional);
-        
+
         return response()->json($resultSend);   
     }
 
@@ -116,10 +116,5 @@ class ResponsesController extends Controller
 
         return ceil($peso);
 
-    }
-
-    private function calculatePrice() {
-        
-    }
-    
+    }    
 }
