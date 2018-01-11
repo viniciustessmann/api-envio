@@ -132,8 +132,8 @@ class SendController extends Controller
 
             $obj[$head[$x]] = $this->converterFloat($response[$x]);
             $obj['type'] = $type;
-            $obj['min'] = $peso[0];
-            $obj['max'] = end($peso);
+            $obj['min'] = $this->converterPeso($peso[0]);
+            $obj['max'] = $this->converterPeso(end($peso));
 
             if ($peso[0] == "Kg") {
                 $obj['min'] = -1;
@@ -146,6 +146,10 @@ class SendController extends Controller
 
     private function converterFloat($info) {
         return floatval(str_replace(',', '.', rtrim($info)));
+    }
+
+    private function converterPeso($info) {
+        return floatval(str_replace('.', '', rtrim($info)));
     }
 
 }

@@ -196,7 +196,54 @@ class Send extends Model
         return $this::all()->toArray();
     }
 
-    public function getPrice() {
-        
+    public function getPrice($code, $peso, $valor, $type, $service) {
+
+        $response = [
+            'valor' => $valor,
+            'peso' => $peso * 1000,
+            'code' => strtolower($code),
+            'aditional' => 0,
+            'priceAditional' => 0,
+            'price' => 0,
+            'type' => $type,
+            'ar' => $service['ar'],
+            'mao' => $service['mao'],
+            'seguro' => $service['seguro'],
+        ];
+
+        if ($response['peso'] > 10000) {
+            $response['aditional'] = ($response['peso'] - 10000) / 1000;
+            $response['peso'] = floatval(9000);
+            $response['priceAditional'] = $response['aditional'] * ($this::where('min', -1)->where('type', $response['type'])->first()->toArray()[$response['code']]);
+        }
+
+        $send = $this::where('min', '>', $response['peso'])->where('type', $response['type'])->first();
+
+        if (!$send) {
+            return null;
+        }
+
+        $response['price'] = $send->toArray()[$response['code']];
+        $response['total'] = $response['price'] + $response['priceAditional'];
+            
+        if ($response['ar']) {
+            $response['ar'] = $response['price'] * 0.05;
+            $response['total'] = $response['total'] + $response['ar'];
+        }
+
+        if ($response['mao']) {
+            $response['mao'] = 3;
+            $response['total'] = $response['total'] + $response['mao'];
+        }
+
+        if ($response['seguro']) {
+            $response['seguro'] = $response['valor'] * 0.01;
+            $response['total'] = $response['total'] + $response['seguro'];
+        }
+
+        $response['total'] = round($response['total'], 2);
+
+        return $response; 
     }
+
 }

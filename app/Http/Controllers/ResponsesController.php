@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator ;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Middleware\CepHandler;
+use Ixudra\Curl\Facades\Curl;
+use App\State;
+use App\Code;
+use \App\Send;
 
 class ResponsesController extends Controller
 {
@@ -19,6 +24,7 @@ class ResponsesController extends Controller
         // ar:true
         // mao:false
         //seguro:true
+        
         $errors = $this->validateParams($request);
 
         if ($errors) {
@@ -31,15 +37,27 @@ class ResponsesController extends Controller
 
         $params = $request->all();
 
+        $servicesAditional = [
+            'ar' => $params['ar'],
+            'seguro' => $params['seguro'],
+            'mao' => $params['mao']
+        ];
+
         $peso = $this->calculateDimension($params['comprimento'], $params['largura'], $params['altura'], $params['peso']);
 
-        echo $peso;
-        die;
+        $state = new State();
 
-        return response()->json([
-            'name' => 'Abigail',
-            'state' => 'CA'
-        ]);   
+        $idOrigin = $state->getIdStateByCep($params['origem']);
+        $idDestiny = $state->getIdStateByCep($params['destino']);
+
+        $code = new Code();
+        $codeField = $code->getCodes($idOrigin, $idDestiny);
+
+        $send = new Send();
+        $resultSend['eco'] = $send->getPrice($codeField, $peso, $params['valor'], 'ECO', $servicesAditional);
+        $resultSend['exp'] = $send->getPrice($codeField, $peso, $params['valor'], 'EXP', $servicesAditional);
+        
+        return response()->json($resultSend);   
     }
 
     private function validateParams($request) {
@@ -54,7 +72,8 @@ class ResponsesController extends Controller
             'valor' => 'required',
             'ar' => 'required',
             'mao' => 'required',
-            'seguro' => 'required'
+            'seguro' => 'required',
+            'valor' => 'required'
         ], [
             'required' => ' :attribute é obrigatório.',
             'origem.max'    => 'O CEP de :attribute deve conter  :max números e não conter caracteres.',
@@ -98,4 +117,9 @@ class ResponsesController extends Controller
         return ceil($peso);
 
     }
+
+    private function calculatePrice() {
+        
+    }
+    
 }

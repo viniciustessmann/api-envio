@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Ixudra\Curl\Facades\Curl;
 
 class State extends Model
 {
@@ -65,4 +66,13 @@ class State extends Model
 
         return $response;
     }
+
+    public function getIdStateByCep($cep) {
+        $info = json_decode(Curl::to('https://location.melhorenvio.com.br/' . $cep)->get());
+        $uf = $info->uf;
+
+        return $this->getIdByUf($uf);
+    }
+
+    
 }
