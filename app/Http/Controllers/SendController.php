@@ -50,7 +50,8 @@ class SendController extends Controller
     }
 
     public function import() {
-
+        
+        //TODO - Rever metodo de save, ver se já existe o registro.
         //Erase all data before insert new import.
         DB::delete('delete from sends');
 

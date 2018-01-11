@@ -18,7 +18,7 @@ class ResponsesController extends Controller
         // valor:19.90
         // ar:true
         // mao:false
-
+        //seguro:true
         $errors = $this->validateParams($request);
 
         if ($errors) {
@@ -28,6 +28,13 @@ class ResponsesController extends Controller
                 'messages' => $errors
             ]); 
         }
+
+        $params = $request->all();
+
+        $peso = $this->calculateDimension($params['comprimento'], $params['largura'], $params['altura'], $params['peso']);
+
+        echo $peso;
+        die;
 
         return response()->json([
             'name' => 'Abigail',
@@ -40,18 +47,20 @@ class ResponsesController extends Controller
         $validator = Validator::make($request->all(), [
             'origem' => 'required|max:8',
             'destino' => 'required|max:8',
-            'peso' => 'required|min:1|max:2',
+            'peso' => 'required',
             'altura' => 'required|min:1|max:3',
             'largura' => 'required|min:1|max:3',
             'comprimento' => 'required|min:1|max:3',
             'valor' => 'required',
             'ar' => 'required',
-            'mao' => 'required'
+            'mao' => 'required',
+            'seguro' => 'required'
         ], [
             'required' => ' :attribute é obrigatório.',
             'origem.max'    => 'O CEP de :attribute deve conter  :max números e não conter caracteres.',
             'destino.max'    => 'O CEP de :attribute deve conter  :max números e não conter caracteres.',
             'ar.required' => ' :attribute é obrigatório, use FALSE ou TRUE',
+            'seguro.required' => ' :attribute é obrigatório, use FALSE ou TRUE',
             'mao.required' => ' :attribute é obrigatório, use FALSE ou TRUE',
             'max' => ' :attribute deve conter no maximo :max digitos',
             'min' => ' :attribute deve conter no maximo :min digitos'
@@ -70,5 +79,23 @@ class ResponsesController extends Controller
         }   
 
         return $errors;
+    }
+
+    private function calculateDimension($com, $lar, $alt, $peso) {
+
+        $cub = $com * $lar * $alt;
+
+        $totalCub = $cub/6000;
+
+        if ($totalCub < 10) {
+            return ceil($peso);
+        }
+
+        if ($totalCub >= 10 && $totalCub > $peso) {
+            return ceil($totalCub);
+        }
+
+        return ceil($peso);
+
     }
 }

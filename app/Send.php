@@ -195,4 +195,8 @@ class Send extends Model
     public function findAll() {
         return $this::all()->toArray();
     }
+
+    public function getPrice() {
+        
+    }
 }
