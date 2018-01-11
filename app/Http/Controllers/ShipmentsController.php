@@ -8,7 +8,36 @@ use App\State;
 use App\Code;
 
 class ShipmentsController extends Controller
-{
+{   
+    const CAPITAIS = [
+        'SÃO PAULO',
+        'RIO DE JANEIRO',
+        'SALVADOR',
+        'FORTALEZA',
+        'BELO HORIZONTE',
+        'CURITIBA',
+        'MANAUS',
+        'RECIFE',
+        'PORTO ALEGRE',
+        'BELÉM',
+        'GOIÂNIA',
+        'SÃO LUÍS',
+        'MACEIÓ',
+        'TERESINHA',
+        'NATAL',
+        'CAMPO GRANDE',
+        'JOAÃO PESSOA',
+        'CUIABÁ',
+        'ARACAJU',
+        'FLORIANÓPOLIS',
+        'PORTO VELHO',
+        'MACAPÁ',
+        'RIO BRANCO',
+        'VITÓRIA',
+        'BOA VISTA',
+        'PALMAS'
+    ];
+
     public function calculateForm() {
         return view('calculate');
     }
@@ -44,6 +73,10 @@ class ShipmentsController extends Controller
 
     private function selectCode($origin, $destiny) {
 
+        if(in_array($origin->cidade, $this::CAPITAIS) && in_array($destiny->cidade, $this::CAPITAIS) && $origin->cidade != $destiny->cidade ) {
+            return 'N';
+        }
+
         if($origin->cidade == $destiny->cidade){
             return 'L';
         }
@@ -55,4 +88,6 @@ class ShipmentsController extends Controller
         return 'I';
        
     }
+
 }
+

@@ -30,9 +30,6 @@ class StatesController extends Controller
             $response[$listStates[$code['state_origin']]][$listStates[$code['state_destiny']]] = $code['code'];
         }
 
-
-        // dd($response);
-
         return view('codes', ['codes' => $response]);
     }
 
@@ -75,7 +72,7 @@ class StatesController extends Controller
             }
         }
 
-        die;
+        return 'Importação OK';
        
     }
 
