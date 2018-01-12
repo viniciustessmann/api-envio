@@ -80,15 +80,19 @@ class ShipmentsController extends Controller
         $code = $this->getCodeShipment($responseOrigin, $responseDestiny);
         
         $send = new Send();
-        $response = $send->getPriceSample($code, $params['peso']);
+        $price = $send->getPriceSample($code, $params['peso']);
 
-        if (is_null($response)) {
-            echo 'Price não encontrado no sistema';
+        if (is_null($price)) {
+            echo 'Preço não encontrado no sistema';
             die;
         }
 
-        echo $code;
-        die;
+        return view('result', [
+            'origin' => $responseOrigin['cidade'] . ' / CEP: ' . $params['origin'],
+            'destiny' => $responseDestiny['cidade'] . ' CEP: ' . $params['destiny'],
+            'peso' => $params['peso'] . 'kg',
+            'price' => 'R$' . number_format($price, 2, ',', '.')
+        ]);
         
     }
 

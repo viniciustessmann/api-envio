@@ -35,8 +35,6 @@ class SendController extends Controller
 
     public function get() {
 
-        // dd(DB::connection()->getDatabaseName());
-
         $send = new Send();
         $data = $send->findAll();
 
@@ -117,12 +115,12 @@ class SendController extends Controller
             $send->setI6((isset($item['I6'])) ? $item['I6'] : null);
 
             $res = $this->existThisRowInDbAndNeedUpdate($item, $all);
-
-
+            
             if (is_null($res)) {
                 $send->save();
             }
 
+            //TODO
             // if (isset($res['update'])) {
             //     $send->updateRow($res);
             //     continue;
