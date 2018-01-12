@@ -15,9 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-
-
 Route::get('/import', 'SendController@import');
 Route::get('/import-state', 'StatesController@import');
 Route::get('/import-state-relationship', 'StatesController@importRelationship');
@@ -25,6 +22,4 @@ Route::get('/get-codes', 'StatesController@getCodes');
 Route::get('/get-state', 'StatesController@get');
 Route::get('/get', 'SendController@get');
 Route::get('/calculate', 'ShipmentsController@calculateForm');
-
-
-Route::post('/calculate-request', 'ShipmentsController@calculateRequest')->name('calculate-request');
+Route::match(['get', 'post'], '/calculate-request', 'ShipmentsController@calculateRequest')->name('calculate-request');

@@ -202,9 +202,6 @@ class Send extends Model
 
     public function updateRow($send) {
 
-        echo '<pre>';
-        var_dump($send);
-
         $this->where('id', $send['id'])->update([
             $send['field'] => $send['value']
         ]);
@@ -258,6 +255,22 @@ class Send extends Model
         $response['total'] = round($response['total'], 2);
 
         return $response; 
+    }
+
+    public function getPriceSample($code, $peso) {
+
+        $peso = $peso * 1000;
+        $code = strtolower($code);
+
+        $price = $this::where('min', '>', $peso)->where('type', 'ECO')->first();
+
+        if (!$price) {
+            return null;
+        }
+
+        $price = $price->toArray()[$code];
+
+        return $price;
     }
 
 }

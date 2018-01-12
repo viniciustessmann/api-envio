@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\ExcelServiceProvider;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
@@ -177,7 +176,7 @@ class SendController extends Controller
         $data = [];
 
         //Economico
-        $path = url('/') . Storage::get('teste.csv');
+        $path = url('/') . Storage::get('econimico.csv');
         $response = explode("\n", $path);
 
         for ($x=9; $x<=20; $x++) {
@@ -185,7 +184,7 @@ class SendController extends Controller
         }
 
         //Expresso
-        $path = url('/') . Storage::get('teste2.csv');
+        $path = url('/') . Storage::get('expresso.csv');
         $response = explode("\n", $path);
 
         for ($x=9; $x<=21; $x++) {

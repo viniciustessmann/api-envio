@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Middleware\CepHandler;
-use Ixudra\Curl\Facades\Curl;
 use App\State;
 use App\Code;
 use \App\Send;
