@@ -44,28 +44,28 @@ class SendController extends Controller
             $response[$item['type']][$item['id']] = [
                 'min' => $item['min'] . 'g',
                 'max' => $item['max'] . 'g',
-                'l1' => 'R$' . number_format($item['l1'], 2, ',', '.'),
-                'l2' => 'R$' . number_format($item['l2'], 2, ',', '.'),
-                'l3' => 'R$' . number_format($item['l3'], 2, ',', '.'),
-                'l4' => 'R$' . number_format($item['l4'], 2, ',', '.'),
-                'e1' => 'R$' . number_format($item['e1'], 2, ',', '.'),
-                'e2' => 'R$' . number_format($item['e2'], 2, ',', '.'),
-                'e3' => 'R$' . number_format($item['e3'], 2, ',', '.'),
-                'e4' => 'R$' . number_format($item['e4'], 2, ',', '.'),
-                'n1' => 'R$' . number_format($item['n1'], 2, ',', '.'),
-                'n2' => 'R$' . number_format($item['n2'], 2, ',', '.'),
-                'n3' => 'R$' . number_format($item['n3'], 2, ',', '.'),
-                'n4' => 'R$' . number_format($item['n4'], 2, ',', '.'),
-                'n5' => 'R$' . number_format($item['n5'], 2, ',', '.'),
-                'n6' => 'R$' . number_format($item['n6'], 2, ',', '.'),
-                'i1' => 'R$' . number_format($item['i1'], 2, ',', '.'),
-                'i2' => 'R$' . number_format($item['i2'], 2, ',', '.'),
-                'i3' => 'R$' . number_format($item['i3'], 2, ',', '.'),
-                'i4' => 'R$' . number_format($item['i4'], 2, ',', '.'),
-                'i5' => 'R$' . number_format($item['i5'], 2, ',', '.'),
-                'i6' => 'R$' . number_format($item['i6'], 2, ',', '.'),
-                'create' => $item['created_at'],
-                'update' => $item['updated_at']
+                'l1' => $this->formatValue($item['l1']),
+                'l2' => $this->formatValue($item['l2']),
+                'l3' => $this->formatValue($item['l3']),
+                'l4' => $this->formatValue($item['l4']),
+                'e1' => $this->formatValue($item['e1']),
+                'e2' => $this->formatValue($item['e2']),
+                'e3' => $this->formatValue($item['e3']),
+                'e4' => $this->formatValue($item['e4']),
+                'n1' => $this->formatValue($item['n1']),
+                'n2' => $this->formatValue($item['n2']),
+                'n3' => $this->formatValue($item['n3']),
+                'n4' => $this->formatValue($item['n4']),
+                'n5' => $this->formatValue($item['n5']),
+                'n6' => $this->formatValue($item['n6']),
+                'i1' => $this->formatValue($item['i1']),
+                'i2' => $this->formatValue($item['i2']),
+                'i3' => $this->formatValue($item['i3']),
+                'i4' => $this->formatValue($item['i4']),
+                'i5' => $this->formatValue($item['i5']),
+                'i6' => $this->formatValue($item['i6']),
+                // 'create' => $item['created_at'],
+                // 'update' => $item['updated_at']
             ];
         }
 
@@ -73,6 +73,20 @@ class SendController extends Controller
             'data' => $response,
             'count' => count($data)
         ]);
+    }
+
+    /**
+     * Converter float to coin value
+     * 
+     * @param float value
+     * @return string coin
+     */
+    private function formatValue($value) {
+
+        if (is_null($value)) {
+            return '';
+        }
+        return 'R$' . number_format($value, 2, ',', '.');
     }
 
     public function import() {

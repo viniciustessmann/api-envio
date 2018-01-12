@@ -37,8 +37,8 @@
                             <td>i4</td>
                             <td>i5</td>
                             <td>i6</td>
-                            <td>Create</td>
-                            <td>Update</td>
+                            <!-- <td>Create</td>
+                            <td>Update</td> -->
                         </tr>
                        <?php foreach ($data as  $index => $items) { ?>
                             <tr>
