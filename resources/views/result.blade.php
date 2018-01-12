@@ -31,6 +31,10 @@
                         </tr>
 
                     </table>
+
+                    <div id="map">
+                    </div>
+
                 </div>
             </div>
         </div>
