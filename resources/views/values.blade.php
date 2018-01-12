@@ -11,7 +11,7 @@
             <div class="content">
                 <div class="title m-b-md">
 
-                    <h1>Valores</h1>
+                    <h1>Valores - Registros (<?php echo $count; ?>)</h1>
 
                     <table border=1>
                         <tr>

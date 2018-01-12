@@ -70,13 +70,16 @@ class SendController extends Controller
             ];
         }
 
-        return view('values', ['data' => $response]);
+        return view('values', [
+            'data' => $response,
+            'count' => count($data)
+        ]);
     }
 
     public function import() {
 
-        //DB::delete('delete from sends');
-    
+        // DB::delete('delete from sends');
+
         $send = new Send();
         $all = $send->findAll();
         
@@ -115,20 +118,22 @@ class SendController extends Controller
             $send->setI6((isset($item['I6'])) ? $item['I6'] : null);
 
             $res = $this->existThisRowInDbAndNeedUpdate($item, $all);
-            
-            if (is_null($res)) {
-                $send->save();
+
+            if ($res['update']) {
+                $send->updateRow($res);
+                continue;
             }
 
-            //TODO
-            // if (isset($res['update'])) {
-            //     $send->updateRow($res);
-            //     continue;
-            // }
+            if (is_null($res)) {
+                $send->save();
+                continue;
+            }
 
-            // if ($res != false) {
-            //     $send->save();
-            // }
+
+            if ($res == false) {
+                continue;
+
+            } 
         }
 
         return 'Importação OK';
@@ -147,7 +152,7 @@ class SendController extends Controller
                 continue;
             }
 
-            $response = null;
+            $response = false;
             foreach ($this::codes as $code) {
 
                 $codeUp = strtoupper($code);
@@ -155,7 +160,8 @@ class SendController extends Controller
                 if (!isset($items1[$code])) {
                     continue;
                 }
-                if (isset($items1[$code]) && $items1[$code] != $row[$codeUp]) {
+
+                if ($items1[$code] != $row[$codeUp]) {
                     return [
                         'update' => true,
                         'id' => $items1['id'], 
@@ -174,7 +180,7 @@ class SendController extends Controller
         $data = [];
 
         //Economico
-        $path = url('/') . Storage::get('econimico.csv');
+        $path = url('/') . Storage::get('economico.csv');
         $response = explode("\n", $path);
 
         for ($x=9; $x<=20; $x++) {
