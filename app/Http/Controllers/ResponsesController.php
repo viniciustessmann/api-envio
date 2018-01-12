@@ -46,8 +46,15 @@ class ResponsesController extends Controller
         $peso = $this->calculateDimension($params['comprimento'], $params['largura'], $params['altura'], $params['peso']);
 
         $state = new State();
-
+        
         $idOrigin = $state->getIdStateByCep($params['origem']);
+        if (is_null($idOrigin)) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Não encontrado um ID na database para o CEP: ' .$params['origem']
+            ]); 
+        }
+        
         $idDestiny = $state->getIdStateByCep($params['destino']);
 
         $code = new Code();

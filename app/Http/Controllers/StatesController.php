@@ -37,9 +37,9 @@ class StatesController extends Controller
 
         $data = $this->readCsvStates();
 
-        for ($x=2; $x<=28; $x++) {
+        for ($x=0; $x<=26; $x++) {
             $state = new State();
-            $state->saveIfNotDuplicated($state);
+            $state->saveIfNotDuplicated($data[$x]);
         }
 
         return 'Importação OK';
@@ -78,15 +78,22 @@ class StatesController extends Controller
 
     private function readCsvStates() {
 
-        $path = url('/') . Storage::get('teste3.csv');
+        $path = url('/') . Storage::get('codes.csv');
         $response = explode("\n", $path);
-        
-        return explode(';', $response[2]);
+
+        $states = explode(';', $response[2]);
+
+        unset($states[0]);
+        unset($states[1]);
+
+        sort($states);
+
+        return $states;
     }
 
     private function readCsv() {
 
-        $path = url('/') . Storage::get('teste3.csv');
+        $path = url('/') . Storage::get('codes.csv');
         $data = explode("\n", $path);
         $response = [];
 

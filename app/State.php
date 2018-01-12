@@ -26,16 +26,19 @@ class State extends Model
         return $name->toArray()['name'];
     }
 
-    public function saveIfNotDuplicated(State $state) {
-        if(!$this->existsState($state->getName())) {    
-            $state->save();
+    public function saveIfNotDuplicated($nameState) {
+        
+        if(!$this->existsState($nameState)) {  
+            $this->setName($nameState);
+            $this->save();
         }
     }
 
     private function existsState($name) {
+
         $count = $this::where('name', $name)->count();
-        
-        if ($count == 0) {
+
+        if ($count === 0) {
             return false;
         }
 
@@ -43,13 +46,14 @@ class State extends Model
     }
 
     public function getIdByUf($name) {
-        $state = $this::where('name', $name)->first()->toArray();
+        
+        $state = $this::where('name', $name)->first();
 
         if (!$state) {
             return null;
         }
 
-        return $state['id'];
+        return $state->toArray()['id'];
     }
 
     public function findAll() {

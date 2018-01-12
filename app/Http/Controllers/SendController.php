@@ -11,7 +11,6 @@ use App\Send;
 
 class SendController extends Controller
 {   
-
     const codes = [
         'l1',
         'l2',
@@ -36,6 +35,8 @@ class SendController extends Controller
     ];
 
     public function get() {
+
+        // dd(DB::connection()->getDatabaseName());
 
         $send = new Send();
         $data = $send->findAll();
@@ -118,14 +119,19 @@ class SendController extends Controller
 
             $res = $this->existThisRowInDbAndNeedUpdate($item, $all);
 
-            if (isset($res['update'])) {
-                $send->updateRow($res);
-                continue;
-            }
 
-            if ($res != false) {
+            if (is_null($res)) {
                 $send->save();
             }
+
+            // if (isset($res['update'])) {
+            //     $send->updateRow($res);
+            //     continue;
+            // }
+
+            // if ($res != false) {
+            //     $send->save();
+            // }
         }
 
         return 'Importação OK';
@@ -144,7 +150,7 @@ class SendController extends Controller
                 continue;
             }
 
-            $response = false;
+            $response = null;
             foreach ($this::codes as $code) {
 
                 $codeUp = strtoupper($code);
