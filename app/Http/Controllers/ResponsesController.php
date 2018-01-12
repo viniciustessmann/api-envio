@@ -36,6 +36,8 @@ class ResponsesController extends Controller
         }
 
         $params = $request->all();
+        $params['origem'] = str_replace('-', '', $params['origem']);
+        $params['destino'] = str_replace('-', '', $params['destino']);
 
         $servicesAditional = [
             'ar' => $params['ar'],
@@ -46,16 +48,16 @@ class ResponsesController extends Controller
         $peso = $this->calculateDimension($params['comprimento'], $params['largura'], $params['altura'], $params['peso']);
 
         $state = new State();
-        
+
         $idOrigin = $state->getIdStateByCep($params['origem']);
-        if (is_null($idOrigin)) {
-            return response()->json([
-                'error' => true,
-                'message' => 'Não encontrado um ID na database para o CEP: ' .$params['origem']
-            ]); 
+        if ($idOrigin['error']) {
+            return $idOrigin;
         }
-        
+
         $idDestiny = $state->getIdStateByCep($params['destino']);
+        if ($idDestiny['error']) {
+            return $idDestiny;
+        }
 
         $code = new Code();
         $codeField = $code->getCodes($idOrigin, $idDestiny);
@@ -70,8 +72,8 @@ class ResponsesController extends Controller
     private function validateParams($request) {
 
         $validator = Validator::make($request->all(), [
-            'origem' => 'required|max:8',
-            'destino' => 'required|max:8',
+            'origem' => 'required|max:9',
+            'destino' => 'required|max:9',
             'peso' => 'required',
             'altura' => 'required|min:1|max:3',
             'largura' => 'required|min:1|max:3',
@@ -105,6 +107,10 @@ class ResponsesController extends Controller
         }   
 
         return $errors;
+    }
+
+    private function customValidate() {
+        //TODO
     }
 
     private function calculateDimension($com, $lar, $alt, $peso) {

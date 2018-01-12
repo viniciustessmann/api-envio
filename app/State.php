@@ -73,6 +73,14 @@ class State extends Model
 
     public function getIdStateByCep($cep) {
         $info = json_decode(Curl::to('https://location.melhorenvio.com.br/' . $cep)->get());
+
+        if (isset($info->error)) {
+            return [
+                'error' => true,
+                'message' => $info->error . '. CEP:' . $cep
+            ];
+        }
+
         $uf = $info->uf;
 
         return $this->getIdByUf($uf);
