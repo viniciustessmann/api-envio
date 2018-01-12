@@ -15,7 +15,6 @@
 
                     <table border=1>
                         <tr>
-                            <td>ID</td>
                             <td>Peso minmo</td>
                             <td>Peso maximo</td>
                             <td>l1</td>
@@ -43,15 +42,27 @@
                         </tr>
                        <?php foreach ($data as  $index => $items) { ?>
                             <tr>
-                                <td><?php echo $index; ?></td>
+                                <td>
+                                    <?php
+                                        echo $index; 
+                                    ?>
+                                </td>
                             </tr>
-                            <?php foreach ($items as $index2 => $item) {  ?>
-                                <tr>
+                            <?php foreach ($items as $index2 => $item) {   ?>
+                                <tr> 
                                     <?php foreach ($item as $index3 => $obj) {  ?>
-                                        <td><?php echo $obj ?></td>
+                                        <td>
+                                            <?php
+                                                if ($obj == '-1g') {
+                                                    echo 'Adicional';
+                                                } else {
+                                                echo $obj;
+                                                }
+                                            ?>
+                                        </td>
                                     <?php } ?>
                                 </tr>
-                            <?php } ?>
+                            <?php  } ?>
                        <?php } ?>
                     </table>
                 </div>
