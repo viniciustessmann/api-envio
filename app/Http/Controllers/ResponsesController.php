@@ -10,20 +10,21 @@ use App\State;
 use App\Code;
 use \App\Send;
 
+/**
+ * Controller to manager reponses of API
+ * @author Vinícius Schlee Tessmann
+ * @version 1.0
+ */
 class ResponsesController extends Controller
-{
-    public function getResponse(Request $request) {
+{   
 
-        // origem:96020360
-        // destino:96065710
-        // peso:5000
-        // largura:30
-        // altura:50
-        // comprimento:15
-        // valor:19.90
-        // ar:true
-        // mao:false
-        //seguro:true
+    /** 
+    * Get the request form API
+    *
+    * @param Request request
+    * @return Json response
+    */
+    public function getResponse(Request $request) {
         
         $errors = $this->validateParams($request);
 
@@ -36,6 +37,8 @@ class ResponsesController extends Controller
         }
 
         $params = $request->all();
+
+        //Remove "-" on CEPS
         $params['origem'] = str_replace('-', '', $params['origem']);
         $params['destino'] = str_replace('-', '', $params['destino']);
 
@@ -45,7 +48,12 @@ class ResponsesController extends Controller
             'mao' => $params['mao']
         ];
 
-        $peso = $this->calculateDimension($params['comprimento'], $params['largura'], $params['altura'], $params['peso']);
+        $peso = $this->calculateDimension(
+            $params['comprimento'], 
+            $params['largura'], 
+            $params['altura'], 
+            $params['peso']
+        );
 
         $state = new State();
 
@@ -63,12 +71,21 @@ class ResponsesController extends Controller
         $codeField = $code->getCodes($idOrigin, $idDestiny);
 
         $send = new Send();
-        $resultSend['eco'] = $send->getPrice($codeField, $peso, $params['valor'], 'ECO', $servicesAditional);
-        $resultSend['exp'] = $send->getPrice($codeField, $peso, $params['valor'], 'EXP', $servicesAditional);
+
+        $resultSend = [
+            'eco' => $send->getPrice($codeField, $peso, $params['valor'], 'ECO', $servicesAditional),
+            'exp' => $send->getPrice($codeField, $peso, $params['valor'], 'EXP', $servicesAditional)
+        ];
 
         return response()->json($resultSend);   
     }
 
+    /**
+    * Function to validate fields of request
+    *
+    * @param array inputs
+    * @return array errors
+    */
     private function validateParams($request) {
 
         $validator = Validator::make($request->all(), [
@@ -106,25 +123,62 @@ class ResponsesController extends Controller
             }
         }   
 
+        $errorsCustom = $this->customValidate($request->all());
+
+        return array_merge($errorsCustom, $errors);
+    }
+
+    /**
+    * Function to validate dimension of package
+    *
+    * @param array inputs
+    * @return array errors
+    */
+    private function customValidate($inputs) {
+
+        $errors = [];
+
+        if ($inputs['altura'] < 1 || $inputs['altura'] >= 106) {
+            $errors[] = 'Altura deve ser mais que 1cm e menor que 106cm';
+        }
+
+        if ($inputs['largura'] < 10 || $inputs['largura'] >= 106) {
+            $errors[] = 'Largura deve ser mais que 10cm e menor que 106cm';
+        }
+
+        if ($inputs['comprimento'] < 15 || $inputs['comprimento'] >= 106) {
+            $errors[] = 'Comprimento deve ser mais que 16cm e menor que 106cm';
+        }
+
+        if ($inputs['peso'] < 1 || $inputs['peso'] > 30) {
+            $errors[] = 'Peso deve ser mais que 1kg e menor que 30kg';
+        }
+
         return $errors;
     }
 
-    private function customValidate() {
-        //TODO
-    }
-
+     /**
+      * Function to calcute o weight used on shipment 
+      *
+      * @param float com
+      * @param float lar
+      * @param float alt
+      * @param float peso
+      * @return float peso (Shipping Weight)
+      */
     private function calculateDimension($com, $lar, $alt, $peso) {
 
-        $cub = $com * $lar * $alt;
+        /**
+         * Calculo cúbico: Soma do comprimento + largura + altura divido por 6000.
+         * CUB = (COM X LAR X ALT) / 600
+         * 
+         * Se o peso cubico for maior que 10K cobrar valor aditional, e usar o peso maior entre o peso normal e o peso cubico
+         */
+  
+        $pesoCubico = ($com * $lar * $alt)/6000;
 
-        $totalCub = $cub/6000;
-
-        if ($totalCub < 10) {
-            return ceil($peso);
-        }
-
-        if ($totalCub >= 10 && $totalCub > $peso) {
-            return ceil($totalCub);
+        if ($pesoCubico >= 10 && $pesoCubico > $peso) {
+            return ceil($pesoCubico);
         }
 
         return ceil($peso);
