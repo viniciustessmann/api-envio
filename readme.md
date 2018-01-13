@@ -19,13 +19,13 @@ Execute o comando no terminal "php artisan migrate" para importar as tables do b
 
 ## API
 Para acessar a API basta fazer uma requisição POST com os paramentros abaixo:
-origem
-destino
-largura
-altura
-comprimento
-peso
-valor
-ar
-mao
-seguro
+- origem 
+- destino
+- largura
+- altura
+- comprimento
+- peso
+- valor
+- ar
+- mao
+- seguro
