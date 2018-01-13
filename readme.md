@@ -2,14 +2,7 @@
 
 ## Configuração inicial
 - rename .env.example para .env
-- Defina as configurações de banco de dados no arquivo .env
-
-- DB_CONNECTION=mysql
-- DB_HOST=127.0.0.1
-- DB_PORT=3306
-- DB_DATABASE=nome_database
-- DB_USERNAME=user
-- DB_PASSWORD=password
+- Defina as configurações de banco de dados no arquivo .env (DB_CONNECTION=mysql, DB_HOST=127.0.0.1, DB_PORT=3306, DB_DATABASE=nome_database, DB_USERNAME=user, DB_PASSWORD=password
 
 ## Comandos
 
