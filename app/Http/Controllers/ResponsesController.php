@@ -77,9 +77,19 @@ class ResponsesController extends Controller
 
         $send = new Send();
 
+        $resultEco = $send->getPrice($codeField, $peso, $params['valor'], 'ECO', $servicesAditional);
+        $resultExp = $send->getPrice($codeField, $peso, $params['valor'], 'EXP', $servicesAditional);
+
+        if (!$resultEco || !$resultExp) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Não foram encontradas informações no banco de dados, entrar em contato com o administrado do sistema'
+            ]);   
+        }
+
         $resultSend = [
-            'eco' => $send->getPrice($codeField, $peso, $params['valor'], 'ECO', $servicesAditional),
-            'exp' => $send->getPrice($codeField, $peso, $params['valor'], 'EXP', $servicesAditional)
+            'eco' => $resultEco,
+            'exp' => $resultExp
         ];
 
         return response()->json($resultSend);   

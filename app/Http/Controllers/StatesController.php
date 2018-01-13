@@ -73,26 +73,33 @@ class StatesController extends Controller
         }
 
         return 'Importação OK';
-       
     }
 
     private function readCsvStates() {
 
+        if (!Storage::disk('local')->has('codes.csv')) {
+            echo 'Arquivo "codes" não encontrado, entre em contato com o administrador do sistema';
+            die;
+        }
+
         $path = url('/') . Storage::get('codes.csv');
         $response = explode("\n", $path);
-
         $states = explode(';', $response[2]);
 
         unset($states[0]);
         unset($states[1]);
 
         sort($states);
-
         return $states;
     }
 
     private function readCsv() {
 
+        if (!Storage::disk('local')->has('codes.csv')) {
+            echo 'Arquivo "codes" não encontrado, entre em contato com o administrador do sistema';
+            die;
+        }
+        
         $path = url('/') . Storage::get('codes.csv');
         $data = explode("\n", $path);
         $response = [];

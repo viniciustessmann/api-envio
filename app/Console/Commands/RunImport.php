@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Http\Controllers\ImportsController;
+use App\Http\Controllers\statesController;
 
 class RunImport extends Command
 {
@@ -37,8 +38,12 @@ class RunImport extends Command
      * @return mixed
      */
     public function handle()
-    {   
-        $import = new importsController();
+    {       
+        $state = new StatesController();
+        $state->import();
+        $state->importRelationship();
+
+        $import = new ImportsController();
         $response = $import->run();
     }
 }

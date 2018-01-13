@@ -12,9 +12,11 @@
 */
 
 Route::get('/', 'ImportsController@get');
-Route::get('/import', 'ImportsController@import');
+
 Route::get('/import-state', 'StatesController@import');
 Route::get('/import-state-relationship', 'StatesController@importRelationship');
+Route::get('/import', 'ImportsController@import');
+
 Route::get('/get-codes', 'StatesController@getCodes');
 Route::get('/get-state', 'StatesController@get');
 Route::get('/calculate', 'ShipmentsController@calculateForm');

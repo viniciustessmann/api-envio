@@ -11,6 +11,7 @@ DB_DATABASE=nome_database
 DB_USERNAME=user
 DB_PASSWORD=password
 
+Execute o "composer install" para obter as dependencias
 Execute o comando no terminal "php artisan key:generate"
 Execute o comando no terminal "php artisan serve" para inicial o servidor do Laravel
 Execute o comando no terminal "php artisan migrate" para importar as tables do banco de dados
