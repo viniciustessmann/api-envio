@@ -226,25 +226,23 @@ class Send extends Model
             $response['aditional'] = ($response['peso'] - 10000) / 1000;
             $response['peso'] = floatval(9000);
 
-            // $objPriceAditional = $this::where('min', -1)->where('type', $response['type'])->first();
             $objPriceAditional = $this->getPriceByWeightAndType(-1, $response['type']);
             
             if (!$objPriceAditional) {
                 return false;
             }
 
-            $response['priceAditional'] = round($response['aditional'] * ($objPriceAditional->toArray()[$response['code']]), 2);
+            $response['priceAditional'] = round($response['aditional'] * ($objPriceAditional[$response['code']]), 2);
             
         }
 
-        // $send = $this::where('min', '>', $response['peso'])->where('type', $response['type'])->first();
         $send = $this->getPriceByWeightAndType($response['peso'], $response['type']);
 
         if (!$send) {
             return false;
         }
 
-        $response['price'] = $send->toArray()[$response['code']];
+        $response['price'] = $send[$response['code']];
         $response['total'] = $response['price'] + $response['priceAditional']; 
             
         if ($response['seguro'] == 1) {
