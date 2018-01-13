@@ -21,13 +21,17 @@
                             <th>Origem</th>
                             <th>Destino</th>
                             <th>Peso</th>
-                            <th>Valor</th>
+                            <th>Codigo</th>
+                            <th>Valor Economico</th>
+                            <th>Valor Expresso</th>
                         </tr>
                         <tr>
                             <td><?php echo $origin; ?></td>
                             <td><?php echo $destiny; ?></td>
                             <td><?php echo $peso; ?></td>
-                            <td><?php echo $price; ?></td>
+                            <td><?php echo $code; ?></td>
+                            <td><?php echo $priceEco; ?></td>
+                            <td><?php echo $priceExp; ?></td>
                         </tr>
 
                     </table>

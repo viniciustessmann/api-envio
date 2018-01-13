@@ -7,6 +7,35 @@ use Ixudra\Curl\Facades\Curl;
 
 class State extends Model
 {
+    const CAPITAIS = [
+        'SÃO PAULO',
+        'RIO DE JANEIRO',
+        'SALVADOR',
+        'FORTALEZA',
+        'BELO HORIZONTE',
+        'CURITIBA',
+        'MANAUS',
+        'RECIFE',
+        'PORTO ALEGRE',
+        'BELÉM',
+        'GOIÂNIA',
+        'SÃO LUÍS',
+        'MACEIÓ',
+        'TERESINHA',
+        'NATAL',
+        'CAMPO GRANDE',
+        'JOÃO PESSOA',
+        'CUIABÁ',
+        'ARACAJU',
+        'FLORIANÓPOLIS',
+        'PORTO VELHO',
+        'MACAPÁ',
+        'RIO BRANCO',
+        'VITÓRIA',
+        'BOA VISTA',
+        'PALMAS'
+    ];
+
     protected $table = 'states';
 
     public function setName($name) {
@@ -71,6 +100,32 @@ class State extends Model
         return $response;
     }
 
+    public function getUfByCep($cep) {
+        $info = json_decode(Curl::to('https://location.melhorenvio.com.br/' . $cep)->get());
+
+        if (isset($info->error)) {
+            return [
+                'error' => true,
+                'message' => $info->error . '. CEP:' . $cep
+            ];
+        }
+
+        return $info->uf;
+    }
+
+    public function getInfoByCep($cep) {
+        $info = json_decode(Curl::to('https://location.melhorenvio.com.br/' . $cep)->get());
+
+        if (isset($info->error)) {
+            return [
+                'error' => true,
+                'message' => $info->error . '. CEP:' . $cep
+            ];
+        }
+
+        return $info;
+    }
+
     public function getIdStateByCep($cep) {
         $info = json_decode(Curl::to('https://location.melhorenvio.com.br/' . $cep)->get());
 
@@ -86,5 +141,58 @@ class State extends Model
         return $this->getIdByUf($uf);
     }
 
+    /**
+     * Function to get the Code of shipment Ex.: N, L, E or I
+     * 
+     * @param string origin
+     * @param string destiny
+     */
+    public function selectCode($origin, $destiny) {
+
+        if(in_array($origin->cidade, $this::CAPITAIS) && in_array($destiny->cidade, $this::CAPITAIS) && $origin->cidade != $destiny->cidade ) {
+            return 'N';
+        }
+
+        if($origin->cidade == $destiny->cidade){
+            return 'L';
+        }
+
+        if($origin->uf == $destiny->uf){
+            return 'E';
+        }
+
+        return 'I';
+       
+    }
+
+    /**
+     * Function to get code of shipment
+     * 
+     * @param string cepOrigin
+     * @param string cepDestiny
+     * @return string code
+     */
+    public  function getCodeShipment($CepOrigin, $CepDestiny) {
+
+        $origin = $this->getInfoByCep($CepOrigin);
+        $destiny = $this->getInfoByCep($CepDestiny);
+
+        $codeSend = $this->selectCode($origin, $destiny);
+
+        $state = new State();
+        $idOrigin = $state->getIdByUf($origin->uf);
+        $idDestiny = $state->getIdByUf($destiny->uf);
+
+        $code = new Code();
+        $codes = $code->getCodes($idOrigin, $idDestiny);
+  
+        $codeId = $codeSend.$codes;
+
+        if (strlen($codeId) > 2) {
+            $codeId = $codes;
+        }
+
+        return $codeId;
+    }
     
 }

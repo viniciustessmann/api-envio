@@ -276,12 +276,12 @@ class Send extends Model
         return $response; 
     }
 
-    public function getPriceSample($code, $peso) {
+    public function getPriceSample($code, $peso, $type) {
 
         $peso = $peso * 1000;
         $code = strtolower($code);
 
-        $price = $this::where('min', '>', $peso)->where('type', 'ECO')->first();
+        $price = $this::where('min', '>', $peso)->where('type', $type)->first();
 
         if (!$price) {
             return null;

@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\State;
 use App\Code;
-use \App\Send;
+use App\Send;
+use \App\Http\Controllers\ShipmentsController;
 
 /**
  * Controller to manager reponses of API
@@ -65,10 +66,10 @@ class ResponsesController extends Controller
             return $idDestiny;
         }
 
-        $code = new Code();
-        $codeField = $code->getCodes($idOrigin, $idDestiny);
+      
+        $codeShipment = $state->getCodeShipment($params['origem'], $params['destino']);
 
-        if (!$codeField) {
+        if (!$codeShipment) {
             return response()->json([
                 'error' => true,
                 'message' => 'Não foram encontradas informações no banco de dados, entrar em contato com o administrado do sistema'
@@ -77,8 +78,8 @@ class ResponsesController extends Controller
 
         $send = new Send();
 
-        $resultEco = $send->getPrice($codeField, $peso, $params['valor'], 'ECO', $servicesAditional);
-        $resultExp = $send->getPrice($codeField, $peso, $params['valor'], 'EXP', $servicesAditional);
+        $resultEco = $send->getPrice($codeShipment, $peso, $params['valor'], 'ECO', $servicesAditional);
+        $resultExp = $send->getPrice($codeShipment, $peso, $params['valor'], 'EXP', $servicesAditional);
 
         if (!$resultEco || !$resultExp) {
             return response()->json([
@@ -225,5 +226,6 @@ class ResponsesController extends Controller
 
         return ceil($peso);
 
-    }    
+    }   
+    
 }

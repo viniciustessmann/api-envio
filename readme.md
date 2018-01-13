@@ -12,9 +12,9 @@
 - Execute o comando no terminal "php artisan migrate" para importar as tables do banco de dados
 
 ## LINKS
-/ -> home (Tabelas com valores)
-/get-states (Mostra os estados cadastrados)
-/get-codes (Mostra os codigos dos estados)
+- / -> home (Tabelas com valores)
+- /get-states (Mostra os estados cadastrados)
+- /get-codes (Mostra os codigos dos estados)
 
 ## API
 Para acessar a API basta fazer uma requisição POST com os paramentros abaixo para a URL '/api/get-value'

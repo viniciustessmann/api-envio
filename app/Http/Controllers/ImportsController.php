@@ -64,8 +64,6 @@ class ImportsController extends Controller
                 'i4' => $this->formatValue($item['i4']),
                 'i5' => $this->formatValue($item['i5']),
                 'i6' => $this->formatValue($item['i6']),
-                // 'create' => $item['created_at'],
-                // 'update' => $item['updated_at']
             ];
         }
 

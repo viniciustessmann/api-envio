@@ -15,37 +15,8 @@ use App\Send;
  */
 class ShipmentsController extends Controller
 {   
-    const CAPITAIS = [
-        'SÃO PAULO',
-        'RIO DE JANEIRO',
-        'SALVADOR',
-        'FORTALEZA',
-        'BELO HORIZONTE',
-        'CURITIBA',
-        'MANAUS',
-        'RECIFE',
-        'PORTO ALEGRE',
-        'BELÉM',
-        'GOIÂNIA',
-        'SÃO LUÍS',
-        'MACEIÓ',
-        'TERESINHA',
-        'NATAL',
-        'CAMPO GRANDE',
-        'JOAÃO PESSOA',
-        'CUIABÁ',
-        'ARACAJU',
-        'FLORIANÓPOLIS',
-        'PORTO VELHO',
-        'MACAPÁ',
-        'RIO BRANCO',
-        'VITÓRIA',
-        'BOA VISTA',
-        'PALMAS'
-    ];
 
     public function calculateForm() {
-        //TODO make a calculater after here.
         return view('calculate');
     }
 
@@ -77,12 +48,16 @@ class ShipmentsController extends Controller
             die;
         }
 
-        $code = $this->getCodeShipment($responseOrigin, $responseDestiny);
+        $state = new State();
+        $code = $state->getCodeShipment($params['origin'], $params['destiny']);
         
         $send = new Send();
-        $price = $send->getPriceSample($code, $params['peso']);
+        $prices = [
+            'eco' => $send->getPriceSample($code, $params['peso'], 'ECO'),
+            'exp' => $send->getPriceSample($code, $params['peso'], 'EXP')
+        ];
 
-        if (is_null($price)) {
+        if (is_null($prices['eco']) || is_null($prices['exp']) ) {
             echo 'Preço não encontrado no sistema';
             die;
         }
@@ -91,7 +66,9 @@ class ShipmentsController extends Controller
             'origin' => $responseOrigin['cidade'] . ' / CEP: ' . $params['origin'],
             'destiny' => $responseDestiny['cidade'] . ' CEP: ' . $params['destiny'],
             'peso' => $params['peso'] . 'kg',
-            'price' => 'R$' . number_format($price, 2, ',', '.')
+            'code' => $code,
+            'priceEco' => 'R$' . number_format($prices['eco'], 2, ',', '.'),
+            'priceExp' => 'R$' . number_format($prices['exp'], 2, ',', '.')
         ]);
         
     }
@@ -148,29 +125,4 @@ class ShipmentsController extends Controller
             'cidade' => $info->cidade
         ];
     }
-
-    /**
-     * Function to get the Code of shipment Ex.: N, L, E or I
-     * 
-     * @param string origin
-     * @param string destiny
-     */
-    private function selectCode($origin, $destiny) {
-
-        if(in_array($origin['cidade'], $this::CAPITAIS) && in_array($destiny['cidade'], $this::CAPITAIS) && $origin-['cidade'] != $destiny-['cidade'] ) {
-            return 'N';
-        }
-
-        if($origin['cidade'] == $destiny['cidade']){
-            return 'L';
-        }
-
-        if($origin['uf'] == $destiny['uf']){
-            return 'E';
-        }
-
-        return 'I';
-       
-    }
-
 }
