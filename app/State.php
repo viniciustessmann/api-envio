@@ -149,19 +149,27 @@ class State extends Model
      */
     public function selectCode($origin, $destiny) {
 
-        if(in_array($origin->cidade, $this::CAPITAIS) && in_array($destiny->cidade, $this::CAPITAIS) && $origin->cidade != $destiny->cidade ) {
-            return 'N';
-        }
+        
+        $response = 'I';
+        // echo '<pre>';
+        // var_dump($origin->cidade);
+        // var_dump($destiny->cidade);
+        // die;
 
-        if($origin->cidade == $destiny->cidade){
-            return 'L';
+        if(in_array($origin->cidade, $this::CAPITAIS) && in_array($destiny->cidade, $this::CAPITAIS) && $origin->cidade != $destiny->cidade ) {
+            $response = 'N';
         }
 
         if($origin->uf == $destiny->uf){
-            return 'E';
+            $response = 'E';
+
+            if($origin->cidade == $destiny->cidade){
+                $response = 'L';
+            }
         }
 
-        return 'I';
+        // var_dump($response);
+        return $response;
        
     }
 
@@ -172,11 +180,11 @@ class State extends Model
      * @param string cepDestiny
      * @return string code
      */
-    public  function getCodeShipment($CepOrigin, $CepDestiny) {
+    public  function getCodeShipment($cepOrigin, $cepDestiny) {
 
-        $origin = $this->getInfoByCep($CepOrigin);
-        $destiny = $this->getInfoByCep($CepDestiny);
-
+        $origin = $this->getInfoByCep($cepOrigin);
+        $destiny = $this->getInfoByCep($cepDestiny);
+        
         $codeSend = $this->selectCode($origin, $destiny);
 
         $state = new State();
@@ -184,13 +192,8 @@ class State extends Model
         $idDestiny = $state->getIdByUf($destiny->uf);
 
         $code = new Code();
-        $codes = $code->getCodes($idOrigin, $idDestiny);
-  
+        $codes = $code->getCodesNumber($idOrigin, $idDestiny);
         $codeId = $codeSend.$codes;
-
-        if (strlen($codeId) > 2) {
-            $codeId = $codes;
-        }
 
         return $codeId;
     }

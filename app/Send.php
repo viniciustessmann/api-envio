@@ -284,7 +284,7 @@ class Send extends Model
         $price = $this->getPriceByWeightAndType($peso, $type);
 
         if (!$price) {
-            return null;
+            return 0;
         }
 
         $price = $price[$code];

@@ -48,14 +48,19 @@ class Code extends Model
         return true;
     }
 
-    public function getCodes($originId, $destinyId) {
+    public function getCodesNumber($originId, $destinyId) {
 
         $codes = $this::where('state_origin', $originId)->where('state_destiny', $destinyId)->where('state_origin', $originId)->first();
 
         if (!$codes) {
             return false;
         }
-        
-        return $codes->toArray()['code'];
+
+        $numberCode = $codes->toArray()['code'];
+        if ( strlen($numberCode) > 1) {
+            $numberCode = substr($numberCode, -1);
+        }
+
+        return $numberCode;
     }
 }

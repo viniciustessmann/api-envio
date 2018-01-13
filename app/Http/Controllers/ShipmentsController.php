@@ -49,29 +49,37 @@ class ShipmentsController extends Controller
         }
 
         $state = new State();
+
         $code = $state->getCodeShipment($params['origin'], $params['destiny']);
-        
+      
         $send = new Send();
         $prices = [
             'eco' => $send->getPriceSample($code, $params['peso'], 'ECO'),
             'exp' => $send->getPriceSample($code, $params['peso'], 'EXP')
         ];
 
-        if (is_null($prices['eco']) || is_null($prices['exp']) ) {
-            echo 'Preço não encontrado no sistema';
-            die;
-        }
-
         return view('result', [
             'origin' => $responseOrigin['cidade'] . ' / CEP: ' . $params['origin'],
             'destiny' => $responseDestiny['cidade'] . ' CEP: ' . $params['destiny'],
             'peso' => $params['peso'] . 'kg',
             'code' => $code,
-            'priceEco' => 'R$' . number_format($prices['eco'], 2, ',', '.'),
-            'priceExp' => 'R$' . number_format($prices['exp'], 2, ',', '.')
+            'priceEco' => $this->setCoinToView($prices['eco']),
+            'priceExp' => $this->setCoinToView($prices['exp'])
         ]);
         
     }
+
+    /**
+     * @param float coin
+     * @return string coin
+     */
+    private function setCoinToView($item) {
+        if ($item == 0) {
+            return 'Não oferecemos esse pacote';
+        }
+        return  'R$' . number_format($item, 2, ',', '.');
+    }
+
 
     /**
      * Function to get code of shipment
