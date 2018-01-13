@@ -210,16 +210,16 @@ class Send extends Model
     public function getPrice($code, $peso, $valor, $type, $service) {
 
         $response = [
-            'valor' => $valor,
+            'valor' => floatval($valor),
             'peso' => $peso * 1000,
             'code' => strtolower($code),
             'aditional' => 0,
             'priceAditional' => 0,
             'price' => 0,
             'type' => $type,
-            'ar' => $service['ar'],
-            'mao' => $service['mao'],
-            'seguro' => $service['seguro'],
+            'ar' => intval($service['ar']),
+            'mao' => intval($service['mao']),
+            'seguro' => intval($service['seguro']),
         ];
 
         if ($response['peso'] > 10000) {
@@ -232,7 +232,7 @@ class Send extends Model
                 return false;
             }
 
-            $response['priceAditional'] = $response['aditional'] * ($objPriceAditional->toArray()[$response['code']]);
+            $response['priceAditional'] = round($response['aditional'] * ($objPriceAditional->toArray()[$response['code']]), 2);
             
         }
 
@@ -243,21 +243,32 @@ class Send extends Model
         }
 
         $response['price'] = $send->toArray()[$response['code']];
-        $response['total'] = $response['price'] + $response['priceAditional'];
+        $response['total'] = $response['price'] + $response['priceAditional']; 
             
-        if ($response['ar']) {
-            $response['ar'] = $response['price'] * 0.05;
-            $response['total'] = $response['total'] + $response['ar'];
+        if ($response['seguro'] == 1) {
+
+            if ($response['type'] == 'ECO' && ( $response['valor'] < 17 || $response['valor'] > 3000 ) ) {
+                $response['seguro'] = 'Valor de segura é válido apenas para valores entre R$17 e R$3.000,00';
+            }
+
+            if ($response['type'] == 'EXP' && ( $response['valor'] < 17 || $response['valor'] > 10000 ) ) {
+                $response['seguro'] = 'Valor de segura é válido apenas para valores entre R$17 e R$10.000,00';
+            }
+
+            if ($response['seguro'] == 1) {
+                $response['seguro'] = round(floatval($response['valor'] * 0.01), 2);
+                $response['total'] = $response['total'] + $response['seguro'];
+            }
         }
 
-        if ($response['mao']) {
+        if ($response['mao'] == 1) {
             $response['mao'] = 3;
             $response['total'] = $response['total'] + $response['mao'];
         }
 
-        if ($response['seguro']) {
-            $response['seguro'] = $response['valor'] * 0.01;
-            $response['total'] = $response['total'] + $response['seguro'];
+        if ($response['ar'] == 1) {
+            $response['ar'] = round($response['total'] * 0.05, 2);
+            $response['total'] = $response['total'] + $response['ar'];
         }
 
         $response['total'] = round($response['total'], 2);

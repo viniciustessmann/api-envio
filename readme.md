@@ -13,7 +13,7 @@
 
 
 ## API
-Para acessar a API basta fazer uma requisição POST com os paramentros abaixo:
+Para acessar a API basta fazer uma requisição POST com os paramentros abaixo para a URL '/api/get-value'
 - origem  (CEP, exempo 96020360)
 - destino (CEP, exempo 96020360)
 - largura (largura em centimetos, exemplo 40)
@@ -21,9 +21,9 @@ Para acessar a API basta fazer uma requisição POST com os paramentros abaixo:
 - comprimento (comprimento em centimetros, exemplo 35.2)
 - peso (peso em piso, exemplo 7.76, 0.25)
 - valor (exemplo 19.99)
-- ar (exemplo true/false)
-- mao (exemplo true/false)
-- seguro (exemplo true/false)
+- ar (exemplo 1 para sim e 0 para não)
+- mao (exemplo 1 para sim e 0 para não)
+- seguro (exemplo 1 para sim e 0 para não)
 
 Para testes utilizei o software POSTMAN para enviar as requisições.
 
