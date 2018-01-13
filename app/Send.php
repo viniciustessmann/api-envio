@@ -226,7 +226,8 @@ class Send extends Model
             $response['aditional'] = ($response['peso'] - 10000) / 1000;
             $response['peso'] = floatval(9000);
 
-            $objPriceAditional = $this::where('min', -1)->where('type', $response['type'])->first();
+            // $objPriceAditional = $this::where('min', -1)->where('type', $response['type'])->first();
+            $objPriceAditional = $this->getPriceByWeightAndType(-1, $response['type']);
             
             if (!$objPriceAditional) {
                 return false;
@@ -236,7 +237,8 @@ class Send extends Model
             
         }
 
-        $send = $this::where('min', '>', $response['peso'])->where('type', $response['type'])->first();
+        // $send = $this::where('min', '>', $response['peso'])->where('type', $response['type'])->first();
+        $send = $this->getPriceByWeightAndType($response['peso'], $response['type']);
 
         if (!$send) {
             return false;
@@ -281,15 +283,25 @@ class Send extends Model
         $peso = $peso * 1000;
         $code = strtolower($code);
 
-        $price = $this::where('min', '>', $peso)->where('type', $type)->first();
+        $price = $this->getPriceByWeightAndType($peso, $type);
 
         if (!$price) {
             return null;
         }
 
-        $price = $price->toArray()[$code];
+        $price = $price[$code];
 
         return $price;
     }
 
+    private function getPriceByWeightAndType($weight, $type) {
+
+        $codes = $this::where('max', '<=', $weight)->where('type', $type)->orderBy('max', 'DESC')->first();
+
+        if (!$codes) {
+            return null;
+        }
+
+        return $codes->toArray();
+    }
 }

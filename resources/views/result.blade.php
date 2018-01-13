@@ -33,12 +33,7 @@
                             <td><?php echo $priceEco; ?></td>
                             <td><?php echo $priceExp; ?></td>
                         </tr>
-
                     </table>
-
-                    <div id="map">
-                    </div>
-
                 </div>
             </div>
         </div>
