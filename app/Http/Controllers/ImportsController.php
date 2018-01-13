@@ -33,10 +33,6 @@ class ImportsController extends Controller
         'i6'
     ];
 
-    public function run() {
-        //TODO MAKE IMPORTS
-    }
-
     public function get() {
 
         $send = new Send();

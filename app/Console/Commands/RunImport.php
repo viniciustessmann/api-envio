@@ -44,6 +44,8 @@ class RunImport extends Command
         $state->importRelationship();
 
         $import = new ImportsController();
-        $response = $import->run();
+        $response = $import->import();
+
+        echo 'Importação OK';
     }
 }
