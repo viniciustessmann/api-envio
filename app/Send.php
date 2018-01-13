@@ -197,6 +197,7 @@ class Send extends Model
     }
 
     public function findAll() {
+        dd('1');
         return $this::all()->toArray();
     }
 
@@ -225,7 +226,15 @@ class Send extends Model
         if ($response['peso'] > 10000) {
             $response['aditional'] = ($response['peso'] - 10000) / 1000;
             $response['peso'] = floatval(9000);
-            $response['priceAditional'] = $response['aditional'] * ($this::where('min', -1)->where('type', $response['type'])->first()->toArray()[$response['code']]);
+
+            $objPriceAditional = $this::where('min', -1)->where('type', $response['type'])->first();
+            
+            if (!$objPriceAditional) {
+                return null;
+            }
+
+            $response['priceAditional'] = $response['aditional'] * ($objPriceAditional->toArray()[$response['code']]);
+            
         }
 
         $send = $this::where('min', '>', $response['peso'])->where('type', $response['type'])->first();
@@ -268,6 +277,7 @@ class Send extends Model
             return null;
         }
 
+        dd('2');
         $price = $price->toArray()[$code];
 
         return $price;

@@ -52,7 +52,7 @@ class Code extends Model
         $codes = $this::where('state_origin', $originId)->where('state_destiny', $destinyId)->where('state_origin', $originId)->first();
 
         if (!$codes) {
-            return null;
+            return false;
         }
         
         return $codes->toArray()['code'];

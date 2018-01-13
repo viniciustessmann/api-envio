@@ -68,6 +68,13 @@ class ResponsesController extends Controller
         $code = new Code();
         $codeField = $code->getCodes($idOrigin, $idDestiny);
 
+        if (!$codeField) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Não foram encontradas informações no banco de dados, entrar em contato com o administrado do sistema'
+            ]);
+        }
+
         $send = new Send();
 
         $resultSend = [
@@ -122,7 +129,6 @@ class ResponsesController extends Controller
         }   
 
         $errorsCustom = $this->customValidate($request->all());
-
         return array_merge($errorsCustom, $errors);
     }
 
