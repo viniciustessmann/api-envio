@@ -168,6 +168,34 @@ class ResponsesController extends Controller
             $errors[] = 'Peso deve ser mais que 1kg e menor que 30kg';
         }
 
+        if (!is_numeric($inputs['valor'])) {
+            $errors[] = 'Valor deve ser numeros, por exemplo 10 ou 19.99';
+        }
+
+        if (!is_numeric($inputs['altura'])) {
+            $errors[] = 'Altura deve ser numeros, por exemplo 40 ou 25.5';
+        }
+
+        if (!is_numeric($inputs['largura'])) {
+            $errors[] = 'Largura deve ser numeros, por exemplo 40 ou 25.5';
+        }
+
+        if (!is_numeric($inputs['comprimento'])) {
+            $errors[] = 'Comprimento deve ser numeros, por exemplo 40 ou 25.5';
+        }
+
+        if (!is_numeric($inputs['ar']) || $inputs['ar'] > 1 ) {
+            $errors[] = 'ar deve ser 1 ou 0';
+        }
+
+        if (!is_numeric($inputs['mao']) || $inputs['mao'] > 1 ) {
+            $errors[] = 'mao deve ser 1 ou 0';
+        }
+
+        if (!is_numeric($inputs['seguro']) || $inputs['seguro'] > 1 ) {
+            $errors[] = 'seguro deve ser 1 ou 0';
+        }
+
         return $errors;
     }
 
